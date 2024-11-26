@@ -1,0 +1,30 @@
+#login-box{
+    width: 100%;
+    max-width: 800px;
+
+    div.img-box{
+        width: 50%;
+        display: flex;
+
+        img{
+            width: 100%;
+            object-fit:cover;
+        }
+    }
+    div.form-box{
+        width: 50%;
+    }
+}
+
+@media only screen and (max-width:600px) {
+    #login-box{
+        width: 90%;
+        display: block;
+        div.img-box{
+            display: none;
+        }
+        div.form-box{
+            width: 100%;
+        }
+    }
+}
