@@ -36,7 +36,7 @@ class EntriOrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_pesanan' => 'required',
+            'id_pesanan' => 'required|unique:pesanans,id_pesanan',
             'id_menu' => 'required|exists:menus,id_menu',
             'id_pelanggan' => 'required|exists:pelanggans,id_pelanggan',
             'jumlah' => 'required|numeric|min:1',
@@ -44,14 +44,15 @@ class EntriOrderController extends Controller
         ]);
 
         try {
-            $pesanan = new Pesanan();
-            $pesanan->id_pesanan = $request->id_pesanan;
-            $pesanan->id_menu = $request->id_menu;
-            $pesanan->id_pelanggan = $request->id_pelanggan;
-            $pesanan->jumlah = $request->jumlah;
-            $pesanan->id_user = $request->id_user;
-            
-            if ($pesanan->save()) {
+            $pesanan = Pesanan::create([
+                'id_pesanan' => $request->id_pesanan,
+                'id_menu' => $request->id_menu,
+                'id_pelanggan' => $request->id_pelanggan,
+                'jumlah' => $request->jumlah,
+                'id_user' => $request->id_user
+            ]);
+
+            if ($pesanan) {
                 return redirect()->route('order')->with('success', 'Pesanan berhasil ditambahkan!');
             }
             return back()->with('error', 'Gagal menambahkan pesanan')->withInput();
@@ -96,12 +97,14 @@ class EntriOrderController extends Controller
                 return back()->with('error', 'Pesanan tidak ditemukan');
             }
 
-            $pesanan->id_menu = $request->id_menu;
-            $pesanan->id_pelanggan = $request->id_pelanggan;
-            $pesanan->jumlah = $request->jumlah;
-            $pesanan->id_user = $request->id_user;
+            $updated = $pesanan->update([
+                'id_menu' => $request->id_menu,
+                'id_pelanggan' => $request->id_pelanggan,
+                'jumlah' => $request->jumlah,
+                'id_user' => $request->id_user
+            ]);
 
-            if ($pesanan->save()) {
+            if ($updated) {
                 return redirect()->route('order')->with('success', 'Pesanan berhasil diupdate');
             }
             return back()->with('error', 'Gagal mengupdate pesanan')->withInput();

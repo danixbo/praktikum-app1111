@@ -21,6 +21,14 @@ class Pesanan extends Model
         'id_user'
     ];
 
+    protected $casts = [
+        'id_pesanan' => 'string',
+        'id_menu' => 'string',
+        'id_pelanggan' => 'string',
+        'jumlah' => 'integer',
+        'id_user' => 'integer'
+    ];
+
     public function menu()
     {
         return $this->belongsTo(Menu::class, 'id_menu', 'id_menu');
