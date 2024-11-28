@@ -73,9 +73,15 @@
                     <h2 class="text-sm uppercase tracking-wider px-6 mb-2 font-medium text-teal-400">Generate</h2>
                     <ul class="space-y-2 px-4">
                         <li><a href="{{ route('laporan') }}" class="flex items-center p-2 hover:bg-gray-700 rounded-md transition duration-300 ease-in-out">
-                                <i class="fa-solid fa-file-lines w-6 mr-3 text-teal-400"></i>
-                                <span class="font-semibold text-gray-100">Laporan</span>
-                            </a></li>
+                            <i class="fa-solid fa-file-lines w-6 mr-3 text-teal-400"></i>
+                            <span class="font-semibold text-gray-100">Laporan</span>
+                        </a></li>
+                        @if(auth()->guard('user')->user()->role == 'waiter' || auth()->guard('user')->user()->role == 'kasir' || auth()->guard('user')->user()->role == 'admin')
+                        <li><a href="{{ route('pelanggan') }}" class="flex items-center p-2 hover:bg-gray-700 rounded-md transition duration-300 ease-in-out">
+                            <i class="fa-solid fa-user w-6 mr-3 text-teal-400"></i>
+                            <span class="font-semibold text-gray-100">Data Pelanggan</span>
+                        </a></li>
+                        @endif
                     </ul>
                 </div>
                 @endif

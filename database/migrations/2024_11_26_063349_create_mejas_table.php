@@ -16,8 +16,6 @@ return new class extends Migration
             $table->string('nomor_meja')->unique();
             $table->integer('kapasitas');
             $table->enum('status', ['tersedia', 'terisi']);
-            $table->string('nama_pelanggan')->nullable();
-            $table->integer('jumlah_pelanggan')->nullable();
             $table->timestamps();
         });
     }

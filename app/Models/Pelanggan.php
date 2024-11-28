@@ -7,13 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pelanggan extends Model
 {
-    /** @use HasFactory<\Database\Factories\PelangganFactory> */
     use HasFactory;
 
-    protected $fillable = [
-        'nama_pelanggan',
-        'no_telepon',
-        'alamat',
-        'email',
-    ];
+    protected $fillable = ['id_pelanggan', 'nama_Pelanggan', 'jenis_Kelamin', 'no_hp', 'alamat'];
+    protected $primaryKey = 'id_pelanggan';
+    public $incrementing = false;
+    protected $keyType = 'string';
 }

@@ -32,33 +32,19 @@ class EntriMejaController extends Controller
             'nomor_meja' => 'required',
             'kapasitas' => 'required|numeric',
             'status' => 'required|in:tersedia,terisi',
-            'nama_pelanggan' => $request->status == 'terisi' ? 'required' : 'nullable',
-            'jumlah_pelanggan' => $request->status == 'terisi' ? "required|numeric|max:{$request->kapasitas}" : 'nullable',
-        ], [
-            'jumlah_pelanggan.max' => 'Jumlah pelanggan tidak boleh melebihi kapasitas meja (:max orang)'
         ]);
 
-        try {
-            $last_meja = Meja::orderBy('nomor_meja', 'desc')->first();
-            $next_number = $last_meja ? (int)substr($last_meja->nomor_meja, 2) + 1 : 1;
-            $formatted_number = sprintf("M-%03d", $next_number);
-            
-            $meja = new Meja();
-            $meja->nomor_meja = $request->nomor_meja;
-            $meja->kapasitas = $request->kapasitas;
-            $meja->status = $request->status;
-            
-            // Hanya set nama_pelanggan dan jumlah_pelanggan jika status terisi
-            if ($request->status == 'terisi') {
-                $meja->nama_pelanggan = $request->nama_pelanggan;
-                $meja->jumlah_pelanggan = $request->jumlah_pelanggan;
-            }
+        $last_meja = Meja::orderBy('nomor_meja', 'desc')->first();
+        $next_number = $last_meja ? (int)substr($last_meja->nomor_meja, 2) + 1 : 1;
+        $formatted_number = sprintf("M-%03d", $next_number);
 
-            $meja->save();
-            return redirect()->route('meja')->with('success', 'Data meja berhasil ditambahkan!');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Gagal menambahkan data meja: ' . $e->getMessage());
-        }
+        $meja = new Meja();
+        $meja->nomor_meja = $formatted_number;
+        $meja->kapasitas = $request->kapasitas;
+        $meja->status = $request->status;
+        $meja->save();
+
+        return redirect()->route('meja')->with('success', 'Data meja berhasil ditambahkan!');
     }
 
     public function edit_data($id_meja) 
@@ -77,26 +63,13 @@ class EntriMejaController extends Controller
             'nomor_meja' => 'required',
             'kapasitas' => 'required|numeric',
             'status' => 'required|in:tersedia,terisi',
-            'nama_pelanggan' => $request->status == 'terisi' ? 'required' : 'nullable',
-            'jumlah_pelanggan' => $request->status == 'terisi' ? "required|numeric|max:{$request->kapasitas}" : 'nullable',
-        ], [
-            'jumlah_pelanggan.max' => 'Jumlah pelanggan tidak boleh melebihi kapasitas meja (:max orang)'
         ]);
 
         $meja = Meja::find($id_meja);
-        
-        // Reset nama_pelanggan dan jumlah_pelanggan jika status tersedia
-        if ($request->status == 'tersedia') {
-            $request->merge([
-                'nama_pelanggan' => null,
-                'jumlah_pelanggan' => null
-            ]);
-        }
-
         if ($meja->update($request->all())) {
             return redirect()->route('meja')->with('success', 'Data meja berhasil diupdate');
         }
-        return back()->with('error', 'Gagal mengupdate data meja');
+        return back()->with('pesan', 'Gagal mengupdate data meja');
     }
 
     public function destroy($id_meja)

@@ -61,35 +61,10 @@
                         </label>
                         <select
                             class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="status" name="status" required onchange="handleStatusChange()">
+                            id="status" name="status" required>
                             <option value="tersedia" @if(isset($edit) && $edit->status == 'tersedia') selected @endif>Tersedia</option>
                             <option value="terisi" @if(isset($edit) && $edit->status == 'terisi') selected @endif>Terisi</option>
                         </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_pelanggan">
-                            Nama Pelanggan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="nama_pelanggan" 
-                            name="nama_pelanggan" 
-                            type="text" 
-                            value="{{ $edit->nama_pelanggan ?? '' }}">
-                    </div>
-
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah_pelanggan">
-                            Jumlah Pelanggan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="jumlah_pelanggan" 
-                            name="jumlah_pelanggan" 
-                            type="number" 
-                            min="1"
-                            value="{{ $edit->jumlah_pelanggan ?? '' }}"
-                            onchange="validateJumlahPelanggan()">
                     </div>
                 </div>
                 <div class="flex items-center gap-4 mt-8">
@@ -131,27 +106,10 @@
                         </label>
                         <select
                             class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="status" name="status" required onchange="handleStatusChange()">
+                            id="status" name="status" required>
                             <option value="tersedia" @if(isset($edit) && $edit->status == 'tersedia') selected @endif>Tersedia</option>
                             <option value="terisi" @if(isset($edit) && $edit->status == 'terisi') selected @endif>Terisi</option>
                         </select>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_pelanggan">
-                            Nama Pelanggan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="nama_pelanggan" name="nama_pelanggan" type="text" value="{{ $edit->nama_pelanggan ?? '' }}">
-                    </div>
-
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah_pelanggan">
-                            Jumlah Pelanggan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="jumlah_pelanggan" name="jumlah_pelanggan" type="number" value="{{ $edit->jumlah_pelanggan ?? '' }}">
                     </div>
                 </div>
                 <div class="flex items-center gap-4 mt-8">
@@ -205,8 +163,6 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nomor Meja</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Kapasitas</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Pelanggan</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Jumlah Pelanggan</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -217,8 +173,6 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->nomor_meja }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->kapasitas }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->status }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->nama_pelanggan ?: '-' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->jumlah_pelanggan ?: '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                             
                             <a href="{{ route('meja.edit', $meja->id) }}">
@@ -289,55 +243,5 @@
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.add('hidden');
     }
-
-    function handleStatusChange() {
-        const statusSelect = document.getElementById('status');
-        const namaPelangganInput = document.getElementById('nama_pelanggan');
-        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
-        const kapasitasInput = document.getElementById('kapasitas');
-
-        if (statusSelect.value === 'tersedia') {
-            namaPelangganInput.value = '';
-            jumlahPelangganInput.value = '';
-            namaPelangganInput.readOnly = true;
-            jumlahPelangganInput.readOnly = true;
-            namaPelangganInput.required = false;
-            jumlahPelangganInput.required = false;
-        } else {
-            namaPelangganInput.readOnly = false;
-            jumlahPelangganInput.readOnly = false;
-            namaPelangganInput.required = true;
-            jumlahPelangganInput.required = true;
-        }
-    }
-
-    // Validate jumlah_pelanggan tidak melebihi kapasitas
-    function validateJumlahPelanggan() {
-        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
-        const kapasitasInput = document.getElementById('kapasitas');
-        const statusSelect = document.getElementById('status');
-
-        if (statusSelect.value === 'terisi') {
-            const jumlahPelanggan = parseInt(jumlahPelangganInput.value) || 0;
-            const kapasitas = parseInt(kapasitasInput.value) || 0;
-
-            if (jumlahPelanggan > kapasitas) {
-                alert('Jumlah pelanggan tidak boleh melebihi kapasitas meja (' + kapasitas + ' orang)');
-                jumlahPelangganInput.value = '';
-            }
-        }
-    }
-
-    // Add event listeners
-    document.addEventListener('DOMContentLoaded', function() {
-        const statusSelect = document.getElementById('status');
-        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
-
-        statusSelect.addEventListener('change', handleStatusChange);
-        jumlahPelangganInput.addEventListener('change', validateJumlahPelanggan);
-
-        // Initialize form state
-        handleStatusChange();
-    });
 </script>
 @endsection
