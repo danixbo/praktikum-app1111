@@ -34,55 +34,140 @@
             </div>
         @endif
 
-        <form action="{{ route('meja.tambah') }}" method="POST" id="addMejaForm">
-            @csrf
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="nomor_meja">
-                        Nomor Meja
-                    </label>
-                    <input
-                        class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                        id="nomor_meja" name="nomor_meja" type="text" value="{{ $edit->nomor_meja??$nomor_meja }}" readonly>
+        @if(isset($edit))
+            <form action="{{ route('meja.update', $edit->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nomor_meja">
+                            Nomor Meja
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="nomor_meja" name="nomor_meja" type="text" value="{{ $edit->nomor_meja ?? $nomor_meja }}" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="kapasitas">
+                            Kapasitas
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="kapasitas" name="kapasitas" type="number" value="{{ $edit->kapasitas ?? '' }}" placeholder="Masukkan kapasitas" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="status">
+                            Status
+                        </label>
+                        <select
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="status" name="status" required onchange="handleStatusChange()">
+                            <option value="tersedia" @if(isset($edit) && $edit->status == 'tersedia') selected @endif>Tersedia</option>
+                            <option value="terisi" @if(isset($edit) && $edit->status == 'terisi') selected @endif>Terisi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_pelanggan">
+                            Nama Pelanggan
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="nama_pelanggan" 
+                            name="nama_pelanggan" 
+                            type="text" 
+                            value="{{ $edit->nama_pelanggan ?? '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah_pelanggan">
+                            Jumlah Pelanggan
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="jumlah_pelanggan" 
+                            name="jumlah_pelanggan" 
+                            type="number" 
+                            min="1"
+                            value="{{ $edit->jumlah_pelanggan ?? '' }}"
+                            onchange="validateJumlahPelanggan()">
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="kapasitas">
-                        Kapasitas
-                    </label>
-                    <input
-                        class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                        id="kapasitas" name="kapasitas" type="number" value="{{ $edit->kapasitas??'' }}" placeholder="Masukkan kapasitas" required>
+                <div class="flex items-center gap-4 mt-8">
+                    <button
+                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        type="submit">
+                        Update Meja
+                    </button>
+                    <button
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        type="reset">
+                        Mulai Ulang
+                    </button>
                 </div>
-                <div>
-                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="status">
-                        Status
-                    </label>
-                    <select
-                        class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                        id="status" name="status" required>
-                        <option value="tersedia" @if(isset($edit) && $edit->status == 'tersedia') selected @endif>Tersedia</option>
-                        <option value="tidak tersedia" @if(isset($edit) && $edit->status == 'tidak tersedia') selected @endif>Tidak Tersedia</option>
-                    </select>
+            </form>
+        @else
+            <form action="{{ route('meja.store') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nomor_meja">
+                            Nomor Meja
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="nomor_meja" name="nomor_meja" type="text" value="{{ $edit->nomor_meja ?? $nomor_meja }}" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="kapasitas">
+                            Kapasitas
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="kapasitas" name="kapasitas" type="number" value="{{ $edit->kapasitas ?? '' }}" placeholder="Masukkan kapasitas" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="status">
+                            Status
+                        </label>
+                        <select
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="status" name="status" required onchange="handleStatusChange()">
+                            <option value="tersedia" @if(isset($edit) && $edit->status == 'tersedia') selected @endif>Tersedia</option>
+                            <option value="terisi" @if(isset($edit) && $edit->status == 'terisi') selected @endif>Terisi</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_pelanggan">
+                            Nama Pelanggan
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="nama_pelanggan" name="nama_pelanggan" type="text" value="{{ $edit->nama_pelanggan ?? '' }}">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah_pelanggan">
+                            Jumlah Pelanggan
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="jumlah_pelanggan" name="jumlah_pelanggan" type="number" value="{{ $edit->jumlah_pelanggan ?? '' }}">
+                    </div>
                 </div>
-            </div>
-            <div class="flex items-center gap-4 mt-8">
-                <button
-                    class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                    type="submit">
-                    Simpan Perubahan
-                </button>
-                <button
-                    class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
-                    onclick="document.getElementById('addMejaForm').submit()">
-                    + Tambah Meja
-                </button>
-                <button
-                    class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                    type="reset">
-                    Mulai Ulang
-                </button>
-            </div>
-        </form>
+                <div class="flex items-center gap-4 mt-8">
+                    <button
+                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        type="submit">
+                        Tambah Meja
+                    </button>
+                    <button
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        type="reset">
+                        Mulai Ulang
+                    </button>
+                </div>
+            </form>
+        @endif
     </div>
 @endsection
 
@@ -120,6 +205,8 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nomor Meja</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Kapasitas</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Pelanggan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Jumlah Pelanggan</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -130,6 +217,8 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->nomor_meja }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->kapasitas }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->status }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->nama_pelanggan ?: '-' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $meja->jumlah_pelanggan ?: '-' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                             
                             <a href="{{ route('meja.edit', $meja->id) }}">
@@ -172,6 +261,13 @@
                         </div>
                     </div>
                     <div class="bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                        <form id="deleteForm" method="POST" style="display: inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                Hapus
+                            </button>
+                        </form>
                         <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-500 shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-gray-300 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
@@ -187,11 +283,61 @@
     function openDeleteModal(id, nomor_meja) {
         document.getElementById('deleteModal').classList.remove('hidden');
         document.getElementById('mejaName').textContent = nomor_meja;
-        document.getElementById('deleteForm').action = "/" + id;
+        document.getElementById('deleteForm').action = "/dashboard/meja/" + id;
     }
 
     function closeDeleteModal() {
         document.getElementById('deleteModal').classList.add('hidden');
     }
+
+    function handleStatusChange() {
+        const statusSelect = document.getElementById('status');
+        const namaPelangganInput = document.getElementById('nama_pelanggan');
+        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
+        const kapasitasInput = document.getElementById('kapasitas');
+
+        if (statusSelect.value === 'tersedia') {
+            namaPelangganInput.value = '';
+            jumlahPelangganInput.value = '';
+            namaPelangganInput.readOnly = true;
+            jumlahPelangganInput.readOnly = true;
+            namaPelangganInput.required = false;
+            jumlahPelangganInput.required = false;
+        } else {
+            namaPelangganInput.readOnly = false;
+            jumlahPelangganInput.readOnly = false;
+            namaPelangganInput.required = true;
+            jumlahPelangganInput.required = true;
+        }
+    }
+
+    // Validate jumlah_pelanggan tidak melebihi kapasitas
+    function validateJumlahPelanggan() {
+        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
+        const kapasitasInput = document.getElementById('kapasitas');
+        const statusSelect = document.getElementById('status');
+
+        if (statusSelect.value === 'terisi') {
+            const jumlahPelanggan = parseInt(jumlahPelangganInput.value) || 0;
+            const kapasitas = parseInt(kapasitasInput.value) || 0;
+
+            if (jumlahPelanggan > kapasitas) {
+                alert('Jumlah pelanggan tidak boleh melebihi kapasitas meja (' + kapasitas + ' orang)');
+                jumlahPelangganInput.value = '';
+            }
+        }
+    }
+
+    // Add event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusSelect = document.getElementById('status');
+        const jumlahPelangganInput = document.getElementById('jumlah_pelanggan');
+
+        statusSelect.addEventListener('change', handleStatusChange);
+        jumlahPelangganInput.addEventListener('change', validateJumlahPelanggan);
+
+        // Initialize form state
+        handleStatusChange();
+    });
 </script>
 @endsection

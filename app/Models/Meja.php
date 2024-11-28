@@ -14,6 +14,8 @@ class Meja extends Model
         'nomor_meja',
         'kapasitas',
         'status',
+        'nama_pelanggan',
+        'jumlah_pelanggan',
     ];
 
     public function pesanan()

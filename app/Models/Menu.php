@@ -11,9 +11,14 @@ class Menu extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id_menu',
         'nama_menu',
         'harga',
     ];
+
+    protected $primaryKey = 'id_menu';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public function pesanan()
     {

@@ -18,41 +18,45 @@
 @endsection
 
 @section('edit-tambah')
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            @if(session('success'))
-                <div class="bg-green-500 text-white p-4 rounded-md mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        @if(session('success'))
+            <div class="bg-green-500 text-white p-4 rounded-md mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            @if($errors->any())
-                <div class="bg-red-500 text-white p-4 rounded-md mb-4">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+        @if($errors->any())
+            <div class="bg-red-500 text-white p-4 rounded-md mb-4">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-            <form action="" method="POST">
+        @if(isset($edit))
+            <form action="{{ route('barang.update', ['id_menu' => $edit->id_menu]) }}" method="POST">
                 @csrf
+                @method('PUT')
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_barang">
-                            ID Barang
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_menu">
+                            ID Menu
                         </label>
                         <input
                             class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="id_barang" name="id_barang" type="number" placeholder="" required readonly>
+                            id="id_menu" name="id_menu" type="text" 
+                            value="{{ $edit->id_menu }}" readonly>
                     </div>
                     <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_barang">
-                            Nama Barang
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_menu">
+                            Nama Menu
                         </label>
                         <input
                             class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="nama_barang" name="nama_barang" type="text" placeholder="Basreng 1KG" required>
+                            id="nama_menu" name="nama_menu" type="text" 
+                            value="{{ $edit->nama_menu }}" required>
                     </div>
                     <div>
                         <label class="block text-gray-300 text-sm font-semibold mb-2" for="harga">
@@ -60,29 +64,69 @@
                         </label>
                         <input
                             class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="harga" name="harga" type="text" placeholder="Rp 30.000" required>
+                            id="harga" name="harga" type="number" 
+                            value="{{ $edit->harga }}" required>
                     </div>
                 </div>
                 <div class="flex items-center gap-4 mt-8">
                     <button
-                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
                         type="submit">
-                        Simpan Data
+                        {{ isset($edit) ? 'Update Barang' : 'Tambah Barang' }}
                     </button>
-                    <a href="">
-                        <button
-                            class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                            + Tambah Data
-                        </button>
-                    </a>
                     <button
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
                         type="reset">
                         Mulai Ulang
                     </button>
                 </div>
             </form>
-        </div>
+        @else
+            <form action="{{ route('barang.store') }}" method="POST">
+                @csrf
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_menu">
+                            ID Menu
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="id_menu" name="id_menu" type="text" 
+                            value="{{ $edit->id_menu ?? $id_menu }}" readonly>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="nama_menu">
+                            Nama Menu
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="nama_menu" name="nama_menu" type="text" 
+                            value="{{ $edit->nama_menu ?? '' }}" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="harga">
+                            Harga
+                        </label>
+                        <input
+                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
+                            id="harga" name="harga" type="number" 
+                            value="{{ $edit->harga ?? '' }}" required>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 mt-8">
+                    <button
+                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                        type="submit">
+                        {{ isset($edit) ? 'Update Barang' : 'Tambah Barang' }}
+                    </button>
+                    <button
+                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out"
+                        type="reset">
+                        Mulai Ulang
+                    </button>
+                </div>
+            </form>
+        @endif
     </div>
 @endsection
 
@@ -128,8 +172,8 @@
         <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
             <thead class="bg-gray-700">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Barang</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Barang</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Menu</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nama Menu</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Harga</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Aksi</th>
                 </tr>
@@ -137,24 +181,23 @@
             <tbody class="divide-y divide-gray-700">
                 @forelse ($barangs as $barang)
                     <tr class="hover:bg-gray-700 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $barang->id_barang }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $barang->nama_barang }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $barang->id_menu }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $barang->nama_menu }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $barang->harga }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            <a href="{{ route('pages.barang.edit', $barang->id_barang) }}">
+                            <a href="{{ route('barang.edit', $barang->id_menu) }}">
                                 <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md mr-2">
                                     <i class="fa-solid fa-pencil"></i>
                                 </button>
                             </a>
-                            <button onclick="openDeleteModal('{{ $barang->id_barang }}', '{{ $barang->nama_barang }}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md mr-2">
+                            <button onclick="openDeleteModal('{{ $barang->id_menu }}', '{{ $barang->nama_menu }}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md mr-2">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </td>
                     </tr>
-                    @empty
+                @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">Tidak ada
-                            data barang</td>
+                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">Tidak ada data menu</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -178,20 +221,20 @@
                                 </h3>
                                 <div class="mt-2">
                                     <p class="text-sm text-gray-400">
-                                        Apakah Anda yakin ingin menghapus data barang <span id="barangName" class="font-bold text-teal-400"></span>?
+                                        Apakah Anda yakin ingin menghapus data barang <span id="barangID" class="font-bold text-teal-400"></span> Dengan Nama <span id="barangName" class="font-bold text-teal-400"></span>?
                                     </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        {{-- <form id="deleteForm" method="POST">
+                        <form id="deleteForm" method="POST" style="display: inline;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Hapus
                             </button>
-                        </form> --}}
+                        </form>
                         <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-500 shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-gray-300 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
@@ -204,10 +247,12 @@
 
 @section('scripts')
 <script>
-    function openDeleteModal(id_barang, nama) {
+    
+    function openDeleteModal(id_menu, nama) {
         document.getElementById('deleteModal').classList.remove('hidden');
         document.getElementById('barangName').textContent = nama;
-        document.getElementById('deleteForm').action = "/" + id_barang;
+        document.getElementById('barangID').textContent = id_menu;
+        document.getElementById('deleteForm').action = "/dashboard/barang/" + id_menu;
     }
 
     function closeDeleteModal() {

@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('mejas', function (Blueprint $table) {
             $table->id();
-            $table->integer('nomor_meja')->unique();
+            $table->string('nomor_meja')->unique();
             $table->integer('kapasitas');
             $table->enum('status', ['tersedia', 'terisi']);
+            $table->string('nama_pelanggan')->nullable();
+            $table->integer('jumlah_pelanggan')->nullable();
             $table->timestamps();
         });
     }
