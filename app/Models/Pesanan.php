@@ -7,22 +7,32 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pesanan extends Model
 {
-    /** @use HasFactory<\Database\Factories\PesananFactory> */
     use HasFactory;
 
+    protected $primaryKey = 'id_pesanan';
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     protected $fillable = [
-        'id_user',
-        'id_meja',
-        'tanggal',
+        'id_pesanan',
+        'id_menu',
+        'id_pelanggan',
+        'jumlah',
+        'id_user'
     ];
 
-    public function items()
+    public function menu()
     {
-        return $this->belongsToMany(Menu::class, 'pesanan_menu', 'id_pesanan', 'id_menu');
+        return $this->belongsTo(Menu::class, 'id_menu', 'id_menu');
     }
 
-    public function transaksi()
+    public function pelanggan()
     {
-        return $this->hasOne(Transaksi::class, 'id_pesanan');
+        return $this->belongsTo(Pelanggan::class, 'id_pelanggan', 'id_pelanggan');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
 }

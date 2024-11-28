@@ -18,92 +18,101 @@
 @endsection
 
 @section('edit-tambah')
-        <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
-            @if(session('success'))
-                <div class="bg-green-500 text-white p-4 rounded-md mb-4">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg">
+        @if(session('success'))
+            <div class="bg-green-500 text-white p-4 rounded-md mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
 
-            @if($errors->any())
-                <div class="bg-red-500 text-white p-4 rounded-md mb-4">
-                    <ul>
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
+        @if(session('error'))
+            <div class="bg-red-500 text-white p-4 rounded-md mb-4">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="bg-red-500 text-white p-4 rounded-md mb-4">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('order.store') }}" method="POST">
+            @csrf
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_pesanan">
+                        ID Pesanan
+                    </label>
+                    <input class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3"
+                        id="id_pesanan" name="id_pesanan" type="text" 
+                        value="{{ $edit ? $edit->id_pesanan : $id_pesanan }}" readonly>
+                </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_menu">
+                        Menu
+                    </label>
+                    <select class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3"
+                        id="id_menu" name="id_menu" required>
+                        <option value="">Pilih Menu</option>
+                        @foreach($menus as $menu)
+                            <option value="{{ $menu->id_menu }}" 
+                                {{ (isset($edit) && $edit->id_menu == $menu->id_menu) ? 'selected' : '' }}>
+                                {{ $menu->nama_menu }} - Rp {{ number_format($menu->harga, 0, ',', '.') }}
+                            </option>
                         @endforeach
-                    </ul>
+                    </select>
                 </div>
-            @endif
-
-            <form action="" method="POST">
-                @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_pesanan">
-                            ID Pesanan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="id_pesanan" name="id_pesanan" type="number" placeholder="" required readonly>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_menu">
-                            ID Menu
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="id_menu" name="id_menu" type="text" placeholder="1234567890" required>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_pelanggan">
-                            ID Pelanggan
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="id_pelanggan" name="id_pelanggan" type="text" placeholder="1234567890" required>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah">
-                            Jumlah
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="jumlah" name="jumlah" type="number" placeholder="1" required>
-                    </div>
-                    <div>
-                        <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_user">
-                            ID User
-                        </label>
-                        <input
-                            class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-teal-500 transition duration-200"
-                            id="id_user" name="id_user" type="text" placeholder="1234567890" required readonly>
-                    </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_pelanggan">
+                        Pelanggan
+                    </label>
+                    <select class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3"
+                        id="id_pelanggan" name="id_pelanggan" required>
+                        <option value="">Pilih Pelanggan</option>
+                        @foreach($pelanggans as $pelanggan)
+                            <option value="{{ $pelanggan->id_pelanggan }}"
+                                {{ (isset($edit) && $edit->id_pelanggan == $pelanggan->id_pelanggan) ? 'selected' : '' }}>
+                                {{ $pelanggan->nama_Pelanggan }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="flex items-center gap-4 mt-8">
-                    <button
-                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                        type="submit">
-                        Simpan Data
-                    </button>
-                    <a href="">
-                        <button
-                            class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out">
-                            + Tambah Data
-                        </button>
-                    </a>
-                    <button
-                        class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 focus:ring-offset-gray-800"
-                        type="reset">
-                        Mulai Ulang
-                    </button>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="jumlah">
+                        Jumlah
+                    </label>
+                    <input class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3"
+                        id="jumlah" name="jumlah" type="number" min="1"
+                        value="{{ isset($edit) ? $edit->jumlah : old('jumlah') }}" required>
                 </div>
-            </form>
-        </div>
+                <div>
+                    <label class="block text-gray-300 text-sm font-semibold mb-2" for="id_user">
+                        Nama User
+                    </label>
+                    <input class="w-full bg-gray-700 text-gray-100 border border-gray-600 rounded-md py-2 px-3"
+                        type="text" value="{{ $current_user->name }}" readonly>
+                    <input type="hidden" name="id_user" value="{{ $current_user->id }}">
+                </div>
+            </div>
+            <div class="flex items-center gap-4 mt-8">
+                <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-md">
+                    {{ isset($edit) ? 'Update Pesanan' : 'Tambah Pesanan' }}
+                </button>
+                <button type="reset" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md">
+                    Reset
+                </button>
+            </div>
+        </form>
     </div>
 @endsection
 
 @section('content')
-    <div class="rounded-lg">
+    <div class="rounded-lg mt-6">
         <div class="flex justify-between items-center mb-6">
             <div class="relative">
                 <input type="text" id="searchInput" placeholder="Search..."
@@ -141,41 +150,41 @@
                 </ul>
             </div>
         @endif
-        <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
+        <table class="w-full bg-gray-800 rounded-lg overflow-hidden mt-8">
             <thead class="bg-gray-700">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Pesanan</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Menu</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID Pelanggan</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Jumlah</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">ID User</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Aksi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">ID Pesanan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Menu</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Pelanggan</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Jumlah</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">User</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-700">
                 @forelse ($orders as $order)
-                    <tr class="hover:bg-gray-700 transition-colors duration-200">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->id_pesanan }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->id_menu }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->id_pelanggan }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->jumlah }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">{{ $order->id_user }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                            <a href="{{ route('pages.order.edit', $order->id_pesanan) }}">
-                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded-md mr-2">
-                                    <i class="fa-solid fa-pencil"></i>
-                                </button>
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-6 py-4 text-sm text-gray-300">{{ $order->id_pesanan }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">{{ $order->menu->nama_menu }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">{{ $order->pelanggan->nama_Pelanggan }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">{{ $order->jumlah }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">{{ $order->user->name }}</td>
+                        <td class="px-6 py-4 text-sm text-gray-300">
+                            <a href="{{ route('order.edit', $order->id_pesanan) }}" class="text-blue-500 hover:text-blue-700">
+                                <i class="fas fa-edit"></i>
                             </a>
-                            <button onclick="openDeleteModal('{{ $order->id_pesanan }}', '{{ $order->nama }}')" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md mr-2">
-                                <i class="fa-solid fa-trash"></i>
+                            <button onclick="openDeleteModal('{{ $order->id_pesanan }}', '{{ $order->menu->nama_menu }}')" 
+                                class="text-red-500 hover:text-red-700 ml-3">
+                                <i class="fas fa-trash"></i>
                             </button>
                         </td>
                     </tr>
                 @empty
-                <tr>
-                    <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">Tidak ada
-                        data Order</td>
-                </tr>
+                    <tr>
+                        <td colspan="6" class="px-6 py-4 text-sm text-gray-300 text-center">
+                            Tidak ada data pesanan
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
@@ -205,13 +214,13 @@
                         </div>
                     </div>
                     <div class="bg-gray-700 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        {{-- <form id="deleteForm" method="POST">
+                        <form id="deleteForm" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                                 Hapus
                             </button>
-                        </form> --}}
+                        </form>
                         <button type="button" onclick="closeDeleteModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-500 shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-gray-300 hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Batal
                         </button>
@@ -227,7 +236,7 @@
     function openDeleteModal(id_pesanan, nama) {
         document.getElementById('deleteModal').classList.remove('hidden');
         document.getElementById('orderName').textContent = nama;
-        document.getElementById('deleteForm').action = "/" + id_pesanan;
+        document.getElementById('deleteForm').action = "/dashboard/order/" + id_pesanan;
     }
 
     function closeDeleteModal() {

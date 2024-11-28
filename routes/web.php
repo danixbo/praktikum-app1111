@@ -32,6 +32,12 @@ Route::middleware('auth:user')->prefix('dashboard')->group(function() {
 
     
     Route::get('/order', [EntriOrderController::class, 'index'])->name('order');
+    Route::post('/order', [EntriOrderController::class, 'store'])->name('order.store');
+    Route::get('/order/{id_pesanan}/edit', [EntriOrderController::class, 'edit_data'])->name('order.edit');
+    Route::put('/order/{id_pesanan}', [EntriOrderController::class, 'update'])->name('order.update');
+    Route::delete('/order/{id_pesanan}', [EntriOrderController::class, 'destroy'])->name('order.destroy');
+
+
     Route::get('/transaksi', [EntriTransaksiController::class, 'index'])->name('transaksi');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
 
